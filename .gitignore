@@ -144,3 +144,6 @@ static
 
 # Vim swap files
 *.swp
+
+# YCM extra configuration file
+.ycm_extra_conf.py
