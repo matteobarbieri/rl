@@ -147,3 +147,7 @@ static
 
 # YCM extra configuration file
 .ycm_extra_conf.py
+
+# TB logs and generated atari videos
+tb_logs/
+videos/
