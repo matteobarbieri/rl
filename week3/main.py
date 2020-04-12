@@ -2,19 +2,16 @@ import gym
 # import numpy as np
 # from collections import namedtuple
 # import collections
-import time
-# import math
+# import time
 
-# import torch
-# import torch.nn as nn
-# import torch.optim as optim
-# from torch.nn import Parameter, init
-# from torch.nn import functional as F
+import argparse
 
 from torch.utils.tensorboard import SummaryWriter
 
 import atari_wrappers
 from agent import DQNAgent
+
+from datetime import datetime
 
 # import utils
 
@@ -38,35 +35,54 @@ BATCH_SIZE = 32
 MAX_N_GAMES = 3000
 TEST_FREQUENCY = 10
 
-ENV_NAME = "PongNoFrameskip-v4"
+# ENV_NAME = "PongNoFrameskip-v4"
 SAVE_VIDEO = True
 # DEVICE = 'cpu' #  or 'cuda'
 DEVICE = 'cuda'  # or 'cuda'
 SUMMARY_WRITER = True
 
-LOG_DIR = 'content/runs'
-name = '_'.join([str(k)+'.'+str(v) for k, v in DQN_HYPERPARAMS.items()])
-name = 'prv'
+LOG_DIR = 'tb_logs/runs'
+# name = '_'.join([str(k)+'.'+str(v) for k, v in DQN_HYPERPARAMS.items()])
+# name = 'prv'
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("env_name", choices=[
+        "PongNoFrameskip-v4", "BreakoutNoFrameskip-v4"])
+
+    args = parser.parse_args()
+
+    return args
 
 
 def main():
 
+    args = parse_args()
+
     # create the environment
-    env = atari_wrappers.make_env(ENV_NAME)
+    # env = atari_wrappers.make_env(ENV_NAME)
+    env = atari_wrappers.make_env(args.env_name)
+
+    # Create run name with environment name and timestamp of launch
+    run_name = args.env_name+"_run_"+datetime.now().strftime("%Y%m%d_%H%M")
+
     if SAVE_VIDEO:
         # save the video of the games
-        env = gym.wrappers.Monitor(env, "main-"+ENV_NAME, force=True)
+        # env = gym.wrappers.Monitor(env, "main-"+args.env_name, force=True)
+        # Save every 50th episode
+        env = gym.wrappers.Monitor(
+            env, "videos/"+args.env_name+"/run_"+datetime.now().strftime("%Y%m%d_%H%M"),  # noqa
+            video_callable=lambda episode_id: episode_id % 50 == 0)
 
     # TensorBoard
-    writer = SummaryWriter(log_dir=LOG_DIR+'/'+name + str(time.time())) \
+    writer = SummaryWriter(log_dir=LOG_DIR+'/'+run_name) \
         if SUMMARY_WRITER else None
 
     print('Hyperparams:', DQN_HYPERPARAMS)
 
     # create the agent
-    # agent = DQNAgent(
-        # env, device=DEVICE, summary_writer=writer,
-        # hyperparameters=DQN_HYPERPARAMS)
     agent = DQNAgent(
         env, DQN_HYPERPARAMS, DEVICE, summary_writer=writer)
 
