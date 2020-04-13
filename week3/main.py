@@ -18,7 +18,7 @@ from datetime import datetime
 DQN_HYPERPARAMS = {
     'dueling': False,
     'noisy_net': False,
-    'double_DQN': False,
+    # 'double_DQN': False,
     'n_multi_step': 2,
     'buffer_start_size': 10001,
     'buffer_capacity': 15000,
@@ -57,6 +57,12 @@ def parse_args():
     parser.add_argument("--eps", type=float, default=0.02,
                         help="Final value of epsilon (for action choice)")
 
+    parser.add_argument("--ddqn", action='store_true',
+                        help="Double DQN")
+
+    parser.add_argument("--tag", type=str, default="",
+                        help="Experiment tag")
+
     args = parser.parse_args()
 
     return args
@@ -66,15 +72,20 @@ def main():
 
     args = parse_args()
 
-    # Overwrite default value for epsilon with the one passed by the user
+    # Overwrite default values
     DQN_HYPERPARAMS['epsilon_final'] = args.eps
+    DQN_HYPERPARAMS['double_DQN'] = args.ddqn
 
     # create the environment
     # env = atari_wrappers.make_env(ENV_NAME)
     env = atari_wrappers.make_env(args.env_name)
 
     # Create run name with environment name and timestamp of launch
-    run_name = args.env_name+"_run_"+datetime.now().strftime("%Y%m%d_%H%M")
+    # (and optional tag)
+    run_name = args.env_name
+    if args.tag != "":
+        run_name += f"_{args.tag}"
+    run_name += "_run_"+datetime.now().strftime("%Y%m%d_%H%M")
 
     if SAVE_VIDEO:
         # save the video of the games

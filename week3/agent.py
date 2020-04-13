@@ -63,8 +63,7 @@ class DQNAgent():
         self.optimizer = optim.Adam(self.online_network.parameters(),
                                     lr=hyperparameters['learning_rate'])
 
-        # TODO should be parametrized?
-        self.double_DQN = True
+        self.double_DQN = hyperparameters['double_DQN']
 
         # Discount factor
         self.gamma = hyperparameters['gamma']
@@ -96,10 +95,13 @@ class DQNAgent():
         '''
         # convert the observation in tensor
         state_t = torch.tensor(np.array([obs])).to(self.device)
-        # forawrd pass
+
+        # forward pass
         q_values_t = self.online_network(state_t)
+
         # get the maximum value of the output (i.e. the best action to take)
         _, act_t = torch.max(q_values_t, dim=1)
+
         return int(act_t.item())
 
     def act(self, obs):
