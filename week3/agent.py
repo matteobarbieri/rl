@@ -137,7 +137,7 @@ class DQNAgent():
         Sample batch_size memories from the buffer and optimize them
         '''
 
-        # XXX this should be the part where it waits until it has enough
+        # This should be the part where it waits until it has enough
         # experience
         if len(self.replay_buffer) > self.buffer_start_size:
             # sample
@@ -193,7 +193,7 @@ class DQNAgent():
         # NB gather is a differentiable function
 
         # Next state value with Double DQN. (i.e. get the value predicted
-        # by the target nn, of the best action predicted by the moving nn)
+        # by the target nn, of the best action predicted by the online nn)
         if self.double_DQN:
             double_max_action = self.online_network(next_states_t).max(1)[1]
             double_max_action = double_max_action.detach()
@@ -205,7 +205,7 @@ class DQNAgent():
 
         # Next state value in the normal configuration
         else:
-            next_state_values = self.target_nn(next_states_t).max(1)[0]
+            next_state_values = self.target_network(next_states_t).max(1)[0]
 
         next_state_values = next_state_values.detach()  # No backprop
 
