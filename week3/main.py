@@ -50,7 +50,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("env_name", choices=[
-        "PongNoFrameskip-v4", "BreakoutNoFrameskip-v4"])
+        "PongNoFrameskip-v4",
+        "SpaceInvaders-v4",
+        "BreakoutNoFrameskip-v4"])
 
     args = parser.parse_args()
 
