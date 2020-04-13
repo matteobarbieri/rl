@@ -54,6 +54,9 @@ def parse_args():
         "SpaceInvaders-v4",
         "BreakoutNoFrameskip-v4"])
 
+    parser.add_argument("--eps", type=float, default=0.02,
+                        help="Final value of epsilon (for action choice)")
+
     args = parser.parse_args()
 
     return args
@@ -62,6 +65,9 @@ def parse_args():
 def main():
 
     args = parse_args()
+
+    # Overwrite default value for epsilon with the one passed by the user
+    DQN_HYPERPARAMS['epsilon_final'] = args.eps
 
     # create the environment
     # env = atari_wrappers.make_env(ENV_NAME)
