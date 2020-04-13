@@ -273,6 +273,6 @@ class DQNAgent():
             self.summary_writer.add_scalar(
                 '10_mean_reward', np.mean(self.rewards[-10:]), self.n_games)
             self.summary_writer.add_scalar(
-                'esilon', self.epsilon, self.n_games)
+                'epsilon', self.epsilon, self.n_games)
             self.summary_writer.add_scalar(
                 'loss', np.mean(self.accumulated_loss), self.n_games)
